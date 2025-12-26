@@ -18,9 +18,10 @@ def listLinesWithGroup(day: str, part: str, groupSep: str) -> List[str]:
     with open(f"inputD{day}Ex.txt" if part == "ex" else f"inputD{day}P{part}.txt", "r") as f:
         return [list(group) for key, group in itertools.groupby([item.rstrip() for item in f.readlines()], lambda x: x == groupSep) if not key]
 
-# Output pretty print to output.txt
-def outputToTextFile(data: Any) -> None:
-    with open("output.txt", "w") as f:
+# Output pretty print to text file, remove default Nones when reused in new repo
+def outputToTextFile(data: Any, day: str = None, part: str = None) -> None:
+    filename = "output.txt" if (day is None and part is None) else f"outputD{day}Ex.txt" if part == "ex" else f"inputD{day}P{part}.txt"
+    with open(filename, "w") as f:
         f.write(pprint.pformat(data))
 
 # Get slice of dict from [start, end]
