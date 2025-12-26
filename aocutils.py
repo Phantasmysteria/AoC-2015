@@ -39,6 +39,12 @@ def addToCounter(data: dict[Any, int], key: Any, val: int) -> None:
         data[key] = 0
     data[key] += val
 
+# Variant of hash map with lists as values
+def addToBucket(data: dict[Any, list[Any]], key: Any, val: Any) -> None:
+    if key not in data:
+        data[key] = []
+    data[key].append(val)
+
 # I have never implemented union-find until now
 class UnionFindSize:
     def __init__(self, length):
