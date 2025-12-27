@@ -24,6 +24,10 @@ def outputToTextFile(data: Any, day: str = None, part: str = None) -> None:
     with open(filename, "w") as f:
         f.write(pprint.pformat(data))
 
+# Flatten a 2D list with elements of different sizes. Apparently this is more time efficient than itertools...
+def flatten(data: list[list[Any]]) -> list[Any]:
+    return [inner for outer in data for inner in outer]
+
 # Get slice of dict from [start, end]
 def sliceView(data: dict, start: int, end: int) -> dict:
     ret = {}
