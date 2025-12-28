@@ -1,5 +1,6 @@
-from typing import List, Any
+from typing import List, Any, Iterable
 import itertools
+import collections
 import pprint
 import numpy as np
 
@@ -24,9 +25,17 @@ def outputToTextFile(data: Any, day: str = None, part: str = None) -> None:
     with open(filename, "w") as f:
         f.write(pprint.pformat(data))
 
-# Flatten a 2D list with elements of different sizes. Apparently this is more time efficient than itertools...
-def flatten(data: list[list[Any]]) -> list[Any]:
-    return [inner for outer in data for inner in outer]
+# Flatten any unevenly sized iterable into a generator.
+def flattenGenerator(data: Iterable):
+    for item in data:
+        if isinstance(item, (list, tuple)):
+            yield from flattenGenerator(item)
+        else:
+            yield item
+
+# Flatten any unevenly sized iterable into a 1D list or tuple.
+def flatten(data: Iterable, tup: bool = False) -> list[Any]:
+    return list(flattenGenerator(data)) if not tup else tuple(flattenGenerator(data))
 
 # Get slice of dict from [start, end]
 def sliceView(data: dict, start: int, end: int) -> dict:
@@ -120,6 +129,11 @@ class TwoDGrid:
 
     def __repr__(self):
         return f"2DGrid({self.height, self.width}, {self.wrap},\n\n{self.grid},\n\n{self.stageGrid})"
+
+# Wrapper for compressing and decompressing data for ease of expensive operations
+class CoordinateCompress:
+    def __init__(self):
+        pass
 
 if __name__ == '__main__':
     print("Why are you running this file?")
