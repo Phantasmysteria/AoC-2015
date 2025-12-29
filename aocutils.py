@@ -130,10 +130,41 @@ class TwoDGrid:
     def __repr__(self):
         return f"2DGrid({self.height, self.width}, {self.wrap},\n\n{self.grid},\n\n{self.stageGrid})"
 
-# Wrapper for compressing and decompressing data for ease of expensive operations
-class CoordinateCompress:
-    def __init__(self):
-        pass
+# Class for compressing and decompressing data for ease of expensive operations
+class CoordinateCompressor:
+    def __init__(self, data, toChar):
+        self.uniqueElements = np.sort(np.unique(flatten(data)))
+        self.compressionMap = {v: (chr(ord('A') + k) if toChar else k) for k, v in enumerate(self.uniqueElements)}
+        self.decompressionMap = {(chr(ord('A') + k) if toChar else k): v for k, v in enumerate(self.uniqueElements)}
+        
+    def compress(self, data):
+        ret = []
+        for item in data:
+            if isinstance(item, (list, tuple)):
+                item = self.compress(item)
+            else:
+                try:
+                    item = self.compressionMap[item]
+                except KeyError:
+                    pass
+            ret.append(item)
+        return ret
+
+    def decompress(self, data):
+        ret = []
+        for item in data:
+            if isinstance(item, (list, tuple)):
+                item = self.decompress(item)
+            else:
+                try:
+                    item = self.decompressionMap[item]
+                except KeyError:
+                    pass
+            ret.append(item)
+        return ret
+
+    def __repr__(self):
+        return f"CC({self.uniqueElements}, \n{self.compressionMap}, \n{self.decompressionMap})"
 
 if __name__ == '__main__':
     print("Why are you running this file?")
