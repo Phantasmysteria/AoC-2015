@@ -3,6 +3,7 @@ import itertools
 import collections
 import pprint
 import numpy as np
+import math
 
 # Quick way to convert input file into list of lines
 def listLines(day: str, part: str) -> List[str]:
@@ -58,6 +59,35 @@ def addToBucket(data: dict[Any, list[Any]], key: Any, val: Any) -> None:
     if key not in data:
         data[key] = []
     data[key].append(val)
+
+# Adapted from https://docs.python.org/3/library/itertools.html
+def powerSet(s: list) -> list:
+    return itertools.chain.from_iterable(itertools.combinations(s, r) for r in range(len(s)+1))
+
+# Factorize an integer into its prime factors.
+def primeFactorize(num: int) -> dict[int, int]:
+    primeFactors = {}
+    currNum = num
+    finished = False
+
+    while not finished:
+        for i in range(2, math.ceil(math.sqrt(currNum))+1):
+            if currNum % i == 0:
+                currNum //= i
+                addToCounter(primeFactors, i, 1)
+                break
+        else:
+            if currNum != 1:
+                addToCounter(primeFactors, currNum, 1)
+            finished = True
+
+    return primeFactors
+
+# Factorize an integer into all of its factors.
+def factorize(num: int) -> set[int]:
+    primeFactors = flatten([[k] * v for k, v in primeFactorize(num).items()])
+    return sorted([np.prod(item, dtype=int) for item in list(set(powerSet(primeFactors)))])
+
 
 # I have never implemented union-find until now
 class UnionFindSize:
